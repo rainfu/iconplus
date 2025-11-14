@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TK商户售价计算器</title>
+    <title>TikTok美区全托管售价计算器</title>
     <style>
         :root {
             --primary: #00c6ff;
@@ -234,6 +234,13 @@
             margin-bottom: 0;
         }
         
+        .info-note {
+            font-size: 0.75rem;
+            color: #a0b3d9;
+            margin-top: 5px;
+            font-style: italic;
+        }
+        
         @media (max-width: 480px) {
             body {
                 padding: 12px;
@@ -277,8 +284,8 @@
 <body>
     <div class="container">
         <header>
-            <h1>TK商户售价计算器</h1>
-            <p class="subtitle">智能成本定价 · 利润最大化</p>
+            <h1>TikTok美区全托管售价计算器</h1>
+            <p class="subtitle">成本利润率模式 · 精准定价</p>
         </header>
         
         <div class="card">
@@ -292,24 +299,21 @@
             
             <!-- 结果显示在成本价下方 -->
             <div class="result-card pulse">
-                <div class="result-label">推荐售价</div>
-                <div class="result-value" id="recommendedPrice">¥0.00</div>
-                <div class="result-label">最终利润</div>
+                <div class="result-label">推荐售价 ($)</div>
+                <div class="result-value" id="recommendedPrice">$0.00</div>
+                <div class="result-label">最终利润 (¥)</div>
                 <div class="profit-value" id="finalProfit">¥0.00</div>
             </div>
         </div>
         
         <div class="card">
             <div class="card-title">
-                <i>📊</i> 成本比例设置
-            </div>
-            <div class="input-group">
-                <label for="logisticsRate">物流成本 (%)</label>
-                <input type="number" id="logisticsRate" value="15" min="0" max="100" step="0.1" placeholder="物流成本比例">
+                <i>📊</i> TikTok平台费用
             </div>
             <div class="input-group">
                 <label for="platformRate">平台佣金 (%)</label>
                 <input type="number" id="platformRate" value="10" min="0" max="100" step="0.1" placeholder="平台佣金比例">
+                <div class="info-note">美区全托管平台佣金通常为8-15%</div>
             </div>
             <div class="input-group">
                 <label for="marketingRate">营销费用 (%)</label>
@@ -323,23 +327,49 @@
         
         <div class="card">
             <div class="card-title">
-                <i>📈</i> 利润与折扣设置
+                <i>🌎</i> 跨境物流与税费
             </div>
-            <div class="compact-row">
-                <div class="input-group">
-                    <label for="profitRate">目标利润率 (%)</label>
-                    <input type="number" id="profitRate" value="20" min="0" max="100" step="0.1" placeholder="目标利润率">
-                </div>
-                <div class="input-group">
-                    <label for="discountRate">折扣率 (%)</label>
-                    <input type="number" id="discountRate" value="0" min="0" max="100" step="0.1" placeholder="折扣率">
-                </div>
+            <div class="input-group">
+                <label for="logisticsRate">跨境物流成本 (%)</label>
+                <input type="number" id="logisticsRate" value="15" min="0" max="100" step="0.1" placeholder="跨境物流成本比例">
+                <div class="info-note">含国内配送、国际物流及海外仓储</div>
+            </div>
+            <div class="input-group">
+                <label for="tariffRate">关税税率 (%)</label>
+                <input type="number" id="tariffRate" value="10" min="0" max="100" step="0.1" placeholder="关税税率">
+                <div class="info-note">美对华商品加征关税约10%</div>
+            </div>
+            <div class="input-group">
+                <label for="withholdingRate">预扣税率 (%)</label>
+                <input type="number" id="withholdingRate" value="5" min="0" max="100" step="0.1" placeholder="预扣税率">
+                <div class="info-note">非美卖家预扣税，税率因国别而异</div>
             </div>
         </div>
         
         <div class="card">
             <div class="card-title">
-                <i>🔍</i> 成本分解
+                <i>📈</i> 利润与汇率设置
+            </div>
+            <div class="compact-row">
+                <div class="input-group">
+                    <label for="profitRate">成本利润率 (%)</label>
+                    <input type="number" id="profitRate" value="30" min="0" max="1000" step="0.1" placeholder="成本利润率">
+                    <div class="info-note">利润占成本的比例</div>
+                </div>
+                <div class="input-group">
+                    <label for="exchangeRate">美元汇率</label>
+                    <input type="number" id="exchangeRate" value="7.25" min="0" step="0.01" placeholder="美元汇率">
+                </div>
+            </div>
+            <div class="input-group">
+                <label for="discountRate">折扣率 (%)</label>
+                <input type="number" id="discountRate" value="0" min="0" max="100" step="0.1" placeholder="折扣率">
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-title">
+                <i>🔍</i> 成本分解 (¥)
             </div>
             <div class="breakdown">
                 <div class="breakdown-item">
@@ -347,7 +377,7 @@
                     <div class="breakdown-value" id="breakdownCost">¥0.00</div>
                 </div>
                 <div class="breakdown-item">
-                    <div class="breakdown-label">物流成本</div>
+                    <div class="breakdown-label">跨境物流</div>
                     <div class="breakdown-value" id="breakdownLogistics">¥0.00</div>
                 </div>
                 <div class="breakdown-item">
@@ -363,6 +393,14 @@
                     <div class="breakdown-value" id="breakdownReturn">¥0.00</div>
                 </div>
                 <div class="breakdown-item">
+                    <div class="breakdown-label">关税</div>
+                    <div class="breakdown-value" id="breakdownTariff">¥0.00</div>
+                </div>
+                <div class="breakdown-item">
+                    <div class="breakdown-label">预扣税</div>
+                    <div class="breakdown-value" id="breakdownWithholding">¥0.00</div>
+                </div>
+                <div class="breakdown-item">
                     <div class="breakdown-label">预期利润</div>
                     <div class="breakdown-value" id="breakdownProfit">¥0.00</div>
                 </div>
@@ -376,7 +414,7 @@
     </div>
 
     <script>
-        // 主要计算函数
+        // 主要计算函数 - 基于成本利润率
         function calculatePrice() {
             // 获取输入值
             const costPrice = parseFloat(document.getElementById('costPrice').value) || 0;
@@ -384,8 +422,11 @@
             const platformRate = parseFloat(document.getElementById('platformRate').value) || 0;
             const marketingRate = parseFloat(document.getElementById('marketingRate').value) || 0;
             const returnRate = parseFloat(document.getElementById('returnRate').value) || 0;
+            const tariffRate = parseFloat(document.getElementById('tariffRate').value) || 0;
+            const withholdingRate = parseFloat(document.getElementById('withholdingRate').value) || 0;
             const profitRate = parseFloat(document.getElementById('profitRate').value) || 0;
             const discountRate = parseFloat(document.getElementById('discountRate').value) || 0;
+            const exchangeRate = parseFloat(document.getElementById('exchangeRate').value) || 7.25;
 
             // 验证输入有效性
             if (costPrice < 0) {
@@ -393,35 +434,39 @@
                 return;
             }
 
-            // 计算总成本率（除了商品成本本身）
-            const totalCostRate = logisticsRate + platformRate + marketingRate + returnRate;
+            // 计算利润金额（基于成本利润率）
+            const profitAmount = costPrice * (profitRate / 100);
             
-            // 检查总比例是否超过100%
-            if (totalCostRate + profitRate >= 100) {
-                alert('总成本率和利润率之和不能超过100%');
-                return;
-            }
+            // 计算总成本（商品成本 + 预期利润）
+            const totalCostWithProfit = costPrice + profitAmount;
             
-            // 计算推荐售价（基于成本加成定价方法）
-            // 价格 = 成本价 / (1 - 总成本率 - 目标利润率)
-            const recommendedPrice = costPrice / (1 - totalCostRate/100 - profitRate/100);
+            // 计算各项费用占售价的百分比总和
+            const totalFeeRate = (logisticsRate + platformRate + marketingRate + returnRate + tariffRate + withholdingRate) / 100;
+            
+            // 计算推荐售价（人民币）
+            // 售价 = (商品成本 + 预期利润) / (1 - 总费用率)
+            const recommendedPriceCNY = totalCostWithProfit / (1 - totalFeeRate);
             
             // 应用折扣
-            const finalPrice = recommendedPrice * (1 - discountRate/100);
+            const finalPriceCNY = recommendedPriceCNY * (1 - discountRate/100);
+            
+            // 转换为美元
+            const finalPriceUSD = finalPriceCNY / exchangeRate;
             
             // 计算各项成本金额
-            const logisticsCost = finalPrice * (logisticsRate/100);
-            const platformCost = finalPrice * (platformRate/100);
-            const marketingCost = finalPrice * (marketingRate/100);
-            const returnCost = finalPrice * (returnRate/100);
-            const profitAmount = finalPrice * (profitRate/100);
+            const logisticsCost = finalPriceCNY * (logisticsRate/100);
+            const platformCost = finalPriceCNY * (platformRate/100);
+            const marketingCost = finalPriceCNY * (marketingRate/100);
+            const returnCost = finalPriceCNY * (returnRate/100);
+            const tariffCost = finalPriceCNY * (tariffRate/100);
+            const withholdingCost = finalPriceCNY * (withholdingRate/100);
             
             // 计算最终利润（售价减去所有成本和费用）
-            const totalCost = costPrice + logisticsCost + platformCost + marketingCost + returnCost;
-            const netProfit = finalPrice - totalCost;
+            const totalCost = costPrice + logisticsCost + platformCost + marketingCost + returnCost + tariffCost + withholdingCost;
+            const netProfit = finalPriceCNY - totalCost;
 
             // 更新显示结果
-            document.getElementById('recommendedPrice').textContent = '¥' + finalPrice.toFixed(2);
+            document.getElementById('recommendedPrice').textContent = '$' + finalPriceUSD.toFixed(2);
             const finalProfitElement = document.getElementById('finalProfit');
             finalProfitElement.textContent = '¥' + netProfit.toFixed(2);
             
@@ -438,6 +483,8 @@
             document.getElementById('breakdownPlatform').textContent = '¥' + platformCost.toFixed(2);
             document.getElementById('breakdownMarketing').textContent = '¥' + marketingCost.toFixed(2);
             document.getElementById('breakdownReturn').textContent = '¥' + returnCost.toFixed(2);
+            document.getElementById('breakdownTariff').textContent = '¥' + tariffCost.toFixed(2);
+            document.getElementById('breakdownWithholding').textContent = '¥' + withholdingCost.toFixed(2);
             document.getElementById('breakdownProfit').textContent = '¥' + profitAmount.toFixed(2);
         }
 
@@ -448,8 +495,11 @@
             document.getElementById('platformRate').value = '10';
             document.getElementById('marketingRate').value = '8';
             document.getElementById('returnRate').value = '3';
-            document.getElementById('profitRate').value = '20';
+            document.getElementById('tariffRate').value = '10';
+            document.getElementById('withholdingRate').value = '5';
+            document.getElementById('profitRate').value = '30';
             document.getElementById('discountRate').value = '0';
+            document.getElementById('exchangeRate').value = '7.25';
             calculatePrice();
         }
 
