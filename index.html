@@ -2,284 +2,416 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TK商户售价计算器</title>
-    <!-- Framework7 CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/framework7@8/css/framework7.bundle.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/framework7-icons@4/css/framework7-icons.min.css">
     <style>
         :root {
-            --f7-theme-color: #007aff;
-            --f7-block-margin-vertical: 16px;
+            --primary: #00c6ff;
+            --secondary: #0072ff;
+            --dark: #0a1128;
+            --darker: #051128;
+            --light: #f0f8ff;
+            --success: #00ff9d;
+            --danger: #ff3860;
+            --card-bg: rgba(10, 17, 40, 0.7);
+            --glow: 0 0 15px rgba(0, 198, 255, 0.5);
+            --border-radius: 12px;
         }
-        .result-card {
-            background: linear-gradient(135deg, #4a90e2, #007aff);
-            color: white;
-            border-radius: 12px;
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--darker), var(--dark));
+            color: var(--light);
+            min-height: 100vh;
             padding: 20px;
-            margin: 16px 0;
-            box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
+            line-height: 1.6;
         }
-        .result-value {
-            font-size: 28px;
-            font-weight: bold;
-            margin: 10px 0;
+        
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        header {
             text-align: center;
+            margin-bottom: 30px;
+            padding: 20px 0;
+            position: relative;
         }
-        .cost-breakdown {
-            background-color: #f8f9fa;
-            border-radius: 10px;
-            padding: 15px;
+        
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 10px rgba(0, 198, 255, 0.3);
+        }
+        
+        .subtitle {
+            color: #a0b3d9;
+            font-size: 0.9rem;
+        }
+        
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--glow);
+            border: 1px solid rgba(0, 198, 255, 0.2);
+            backdrop-filter: blur(10px);
+        }
+        
+        .card-title {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+        
+        .card-title i {
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .input-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            color: #c0d0f0;
+        }
+        
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(0, 198, 255, 0.3);
+            background: rgba(5, 17, 40, 0.7);
+            color: var(--light);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 10px rgba(0, 198, 255, 0.5);
+        }
+        
+        .result-card {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            text-align: center;
+            padding: 25px;
+            border-radius: var(--border-radius);
+            margin: 25px 0;
+            box-shadow: 0 10px 30px rgba(0, 114, 255, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .result-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            transform: rotate(30deg);
+        }
+        
+        .result-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+        
+        .result-value {
+            font-size: 2.2rem;
+            font-weight: 700;
             margin: 10px 0;
         }
-        .breakdown-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px solid #e5e5e5;
-        }
-        .breakdown-item:last-child {
-            border-bottom: none;
-            font-weight: bold;
-            color: var(--f7-theme-color);
-        }
-        .section-title {
+        
+        .profit-value {
+            font-size: 1.2rem;
             font-weight: 600;
-            margin: 20px 0 10px 0;
-            color: #333;
-            font-size: 16px;
         }
+        
         .profit-positive {
-            color: #4cd964;
+            color: var(--success);
         }
+        
         .profit-negative {
-            color: #ff3b30;
+            color: var(--danger);
+        }
+        
+        .breakdown {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 20px;
+        }
+        
+        .breakdown-item {
+            background: rgba(5, 17, 40, 0.5);
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid rgba(0, 198, 255, 0.1);
+        }
+        
+        .breakdown-label {
+            font-size: 0.8rem;
+            color: #a0b3d9;
+            margin-bottom: 5px;
+        }
+        
+        .breakdown-value {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--light);
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+        
+        button {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            box-shadow: 0 5px 15px rgba(0, 114, 255, 0.4);
+        }
+        
+        .btn-primary:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 8px rgba(0, 114, 255, 0.4);
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--light);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .btn-secondary:active {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 1.6rem;
+            }
+            
+            .result-value {
+                font-size: 1.8rem;
+            }
+            
+            .breakdown {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(0, 198, 255, 0.4);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(0, 198, 255, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(0, 198, 255, 0);
+            }
         }
     </style>
 </head>
 <body>
-    <div id="app">
-        <div class="view view-main">
-            <!-- 顶部导航栏 -->
-            <div class="navbar">
-                <div class="navbar-bg"></div>
-                <div class="navbar-inner">
-                    <div class="title">TK商户售价计算器</div>
-                </div>
+    <div class="container">
+        <header>
+            <h1>TK商户售价计算器</h1>
+            <p class="subtitle">智能成本定价 · 利润最大化</p>
+        </header>
+        
+        <div class="card">
+            <div class="card-title">
+                <i>💰</i> 成本信息
             </div>
-
-            <!-- 页面内容 -->
-            <div class="page-content">
-                <div class="block">
-                    <!-- 成本输入区域 -->
-                    <div class="list inset">
-                        <div class="list">
-                            <ul>
-                                <li class="item-content item-input">
-                                    <div class="item-inner">
-                                        <div class="item-title item-label">成本价(¥)</div>
-                                        <div class="item-input-wrap">
-                                            <input type="number" id="costPrice" placeholder="输入商品成本价" value="50" min="0" step="0.01" class="item-input-field">
-                                            <span class="input-clear-button"></span>
-                                        </div>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <!-- 成本比例设置 -->
-                    <div class="list inset">
-                        <div class="block-header section-title">成本比例设置</div>
-                        <div class="list">
-                            <ul>
-                                <li class="item-content item-input">
-                                    <div class="item-inner">
-                                        <div class="item-title item-label">物流成本(%)</div>
-                                        <div class="item-input-wrap">
-                                            <input type="number" id="logisticsRate" placeholder="物流成本比例" value="15" min="0" max="100" step="0.1" class="item-input-field">
-                                            <span class="input-clear-button"></span>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li class="item-content item-input">
-                                    <div class="item-inner">
-                                        <div class="item-title item-label">包装成本(%)</div>
-                                        <div class="item-input-wrap">
-                                            <input type="number" id="packagingRate" placeholder="包装成本比例" value="5" min="0" max="100" step="0.1" class="item-input-field">
-                                            <span class="input-clear-button"></span>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li class="item-content item-input">
-                                    <div class="item-inner">
-                                        <div class="item-title item-label">平台佣金(%)</div>
-                                        <div class="item-input-wrap">
-                                            <input type="number" id="platformRate" placeholder="平台佣金比例" value="10" min="0" max="100" step="0.1" class="item-input-field">
-                                            <span class="input-clear-button"></span>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li class="item-content item-input">
-                                    <div class="item-inner">
-                                        <div class="item-title item-label">营销费用(%)</div>
-                                        <div class="item-input-wrap">
-                                            <input type="number" id="marketingRate" placeholder="营销费用比例" value="8" min="0" max="100" step="0.1" class="item-input-field">
-                                            <span class="input-clear-button"></span>
-                                        </div>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <!-- 利润和折扣设置 -->
-                    <div class="list inset">
-                        <div class="block-header section-title">利润与折扣设置</div>
-                        <div class="list">
-                            <ul>
-                                <li class="item-content item-input">
-                                    <div class="item-inner">
-                                        <div class="item-title item-label">目标利润率(%)</div>
-                                        <div class="item-input-wrap">
-                                            <input type="number" id="profitRate" placeholder="目标利润率" value="20" min="0" max="100" step="0.1" class="item-input-field">
-                                            <span class="input-clear-button"></span>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li class="item-content item-input">
-                                    <div class="item-inner">
-                                        <div class="item-title item-label">折扣率(%)</div>
-                                        <div class="item-input-wrap">
-                                            <input type="number" id="discountRate" placeholder="折扣率" value="0" min="0" max="100" step="0.1" class="item-input-field">
-                                            <span class="input-clear-button"></span>
-                                        </div>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <!-- 结果显示区域 -->
-                    <div class="block">
-                        <div class="result-card">
-                            <div style="text-align: center; margin-bottom: 10px;">
-                                <i class="f7-icons">money_dollar_circle</i>
-                                <div>推荐售价</div>
-                            </div>
-                            <div class="result-value" id="recommendedPrice">¥0.00</div>
-                            <div style="text-align: center; font-size: 14px; opacity: 0.9;">
-                                最终利润: <span id="finalProfit" class="profit-positive">¥0.00</span>
-                            </div>
-                        </div>
-
-                        <!-- 成本分解 -->
-                        <div class="cost-breakdown">
-                            <div style="font-weight: bold; margin-bottom: 10px;">成本分解</div>
-                            <div class="breakdown-item">
-                                <span>商品成本:</span>
-                                <span id="breakdownCost">¥0.00</span>
-                            </div>
-                            <div class="breakdown-item">
-                                <span>物流成本:</span>
-                                <span id="breakdownLogistics">¥0.00</span>
-                            </div>
-                            <div class="breakdown-item">
-                                <span>包装成本:</span>
-                                <span id="breakdownPackaging">¥0.00</span>
-                            </div>
-                            <div class="breakdown-item">
-                                <span>平台佣金:</span>
-                                <span id="breakdownPlatform">¥0.00</span>
-                            </div>
-                            <div class="breakdown-item">
-                                <span>营销费用:</span>
-                                <span id="breakdownMarketing">¥0.00</span>
-                            </div>
-                            <div class="breakdown-item">
-                                <span>预期利润:</span>
-                                <span id="breakdownProfit">¥0.00</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 操作按钮 -->
-                    <div class="block">
-                        <button class="button button-fill button-large color-blue" id="calculateBtn">计算推荐售价</button>
-                        <button class="button button-large" id="resetBtn">重置所有参数</button>
-                    </div>
+            <div class="input-group">
+                <label for="costPrice">商品成本价 (¥)</label>
+                <input type="number" id="costPrice" value="50" min="0" step="0.01" placeholder="输入商品成本价">
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-title">
+                <i>📊</i> 成本比例设置
+            </div>
+            <div class="input-group">
+                <label for="logisticsRate">物流成本 (%)</label>
+                <input type="number" id="logisticsRate" value="15" min="0" max="100" step="0.1" placeholder="物流成本比例">
+            </div>
+            <div class="input-group">
+                <label for="packagingRate">包装成本 (%)</label>
+                <input type="number" id="packagingRate" value="5" min="0" max="100" step="0.1" placeholder="包装成本比例">
+            </div>
+            <div class="input-group">
+                <label for="platformRate">平台佣金 (%)</label>
+                <input type="number" id="platformRate" value="10" min="0" max="100" step="0.1" placeholder="平台佣金比例">
+            </div>
+            <div class="input-group">
+                <label for="marketingRate">营销费用 (%)</label>
+                <input type="number" id="marketingRate" value="8" min="0" max="100" step="0.1" placeholder="营销费用比例">
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-title">
+                <i>📈</i> 利润与折扣设置
+            </div>
+            <div class="input-group">
+                <label for="profitRate">目标利润率 (%)</label>
+                <input type="number" id="profitRate" value="20" min="0" max="100" step="0.1" placeholder="目标利润率">
+            </div>
+            <div class="input-group">
+                <label for="discountRate">折扣率 (%)</label>
+                <input type="number" id="discountRate" value="0" min="0" max="100" step="0.1" placeholder="折扣率">
+            </div>
+        </div>
+        
+        <div class="result-card pulse">
+            <div class="result-label">推荐售价</div>
+            <div class="result-value" id="recommendedPrice">¥0.00</div>
+            <div class="result-label">最终利润</div>
+            <div class="profit-value" id="finalProfit">¥0.00</div>
+        </div>
+        
+        <div class="card">
+            <div class="card-title">
+                <i>🔍</i> 成本分解
+            </div>
+            <div class="breakdown">
+                <div class="breakdown-item">
+                    <div class="breakdown-label">商品成本</div>
+                    <div class="breakdown-value" id="breakdownCost">¥0.00</div>
+                </div>
+                <div class="breakdown-item">
+                    <div class="breakdown-label">物流成本</div>
+                    <div class="breakdown-value" id="breakdownLogistics">¥0.00</div>
+                </div>
+                <div class="breakdown-item">
+                    <div class="breakdown-label">包装成本</div>
+                    <div class="breakdown-value" id="breakdownPackaging">¥0.00</div>
+                </div>
+                <div class="breakdown-item">
+                    <div class="breakdown-label">平台佣金</div>
+                    <div class="breakdown-value" id="breakdownPlatform">¥0.00</div>
+                </div>
+                <div class="breakdown-item">
+                    <div class="breakdown-label">营销费用</div>
+                    <div class="breakdown-value" id="breakdownMarketing">¥0.00</div>
+                </div>
+                <div class="breakdown-item">
+                    <div class="breakdown-label">预期利润</div>
+                    <div class="breakdown-value" id="breakdownProfit">¥0.00</div>
                 </div>
             </div>
         </div>
+        
+        <div class="buttons">
+            <button class="btn-primary" id="calculateBtn">计算推荐售价</button>
+            <button class="btn-secondary" id="resetBtn">重置所有参数</button>
+        </div>
     </div>
 
-    <!-- Framework7库 -->
-    <script src="https://cdn.jsdelivr.net/npm/framework7@8/bundle/framework7-bundle.min.js"></script>
     <script>
-        // 初始化Framework7 [citation:4]
-        var app = new Framework7({
-            el: '#app',
-            theme: 'ios',
-            // 启用动态导航栏
-            navbar: {
-                mdCenterTitle: true
-            }
-        });
-
         // 主要计算函数
         function calculatePrice() {
             // 获取输入值
-            var costPrice = parseFloat(document.getElementById('costPrice').value) || 0;
-            var logisticsRate = parseFloat(document.getElementById('logisticsRate').value) || 0;
-            var packagingRate = parseFloat(document.getElementById('packagingRate').value) || 0;
-            var platformRate = parseFloat(document.getElementById('platformRate').value) || 0;
-            var marketingRate = parseFloat(document.getElementById('marketingRate').value) || 0;
-            var profitRate = parseFloat(document.getElementById('profitRate').value) || 0;
-            var discountRate = parseFloat(document.getElementById('discountRate').value) || 0;
+            const costPrice = parseFloat(document.getElementById('costPrice').value) || 0;
+            const logisticsRate = parseFloat(document.getElementById('logisticsRate').value) || 0;
+            const packagingRate = parseFloat(document.getElementById('packagingRate').value) || 0;
+            const platformRate = parseFloat(document.getElementById('platformRate').value) || 0;
+            const marketingRate = parseFloat(document.getElementById('marketingRate').value) || 0;
+            const profitRate = parseFloat(document.getElementById('profitRate').value) || 0;
+            const discountRate = parseFloat(document.getElementById('discountRate').value) || 0;
 
             // 验证输入有效性
             if (costPrice < 0) {
-                app.dialog.alert('成本价不能为负数');
+                alert('成本价不能为负数');
                 return;
             }
 
             // 计算总成本率（除了商品成本本身）
-            var totalCostRate = logisticsRate + packagingRate + platformRate + marketingRate;
+            const totalCostRate = logisticsRate + packagingRate + platformRate + marketingRate;
             
             // 检查总比例是否超过100%
             if (totalCostRate + profitRate >= 100) {
-                app.dialog.alert('总成本率和利润率之和不能超过100%');
+                alert('总成本率和利润率之和不能超过100%');
                 return;
             }
             
             // 计算推荐售价（基于成本加成定价方法）
             // 价格 = 成本价 / (1 - 总成本率 - 目标利润率)
-            var recommendedPrice = costPrice / (1 - totalCostRate/100 - profitRate/100);
+            const recommendedPrice = costPrice / (1 - totalCostRate/100 - profitRate/100);
             
             // 应用折扣
-            var finalPrice = recommendedPrice * (1 - discountRate/100);
+            const finalPrice = recommendedPrice * (1 - discountRate/100);
             
             // 计算各项成本金额
-            var logisticsCost = finalPrice * (logisticsRate/100);
-            var packagingCost = finalPrice * (packagingRate/100);
-            var platformCost = finalPrice * (platformRate/100);
-            var marketingCost = finalPrice * (marketingRate/100);
-            var profitAmount = finalPrice * (profitRate/100);
+            const logisticsCost = finalPrice * (logisticsRate/100);
+            const packagingCost = finalPrice * (packagingRate/100);
+            const platformCost = finalPrice * (platformRate/100);
+            const marketingCost = finalPrice * (marketingRate/100);
+            const profitAmount = finalPrice * (profitRate/100);
             
             // 计算最终利润（售价减去所有成本和费用）
-            var totalCost = costPrice + logisticsCost + packagingCost + platformCost + marketingCost;
-            var netProfit = finalPrice - totalCost;
+            const totalCost = costPrice + logisticsCost + packagingCost + platformCost + marketingCost;
+            const netProfit = finalPrice - totalCost;
 
             // 更新显示结果
             document.getElementById('recommendedPrice').textContent = '¥' + finalPrice.toFixed(2);
-            var finalProfitElement = document.getElementById('finalProfit');
+            const finalProfitElement = document.getElementById('finalProfit');
             finalProfitElement.textContent = '¥' + netProfit.toFixed(2);
             
             // 根据利润正负设置颜色
             if (netProfit >= 0) {
-                finalProfitElement.className = 'profit-positive';
+                finalProfitElement.className = 'profit-value profit-positive';
             } else {
-                finalProfitElement.className = 'profit-negative';
+                finalProfitElement.className = 'profit-value profit-negative';
             }
             
             // 更新成本分解
@@ -315,7 +447,7 @@
             document.getElementById('resetBtn').addEventListener('click', resetForm);
             
             // 输入框变化时实时计算
-            var inputs = document.querySelectorAll('input[type="number"]');
+            const inputs = document.querySelectorAll('input[type="number"]');
             inputs.forEach(function(input) {
                 input.addEventListener('input', calculatePrice);
             });
