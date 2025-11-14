@@ -2,11 +2,11 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>TK商户售价计算器</title>
-    <!-- Framework7 iOS主题CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/framework7-icons@4/css/framework7-icons.min.css">
+    <!-- Framework7 CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/framework7@8/css/framework7.bundle.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/framework7-icons@4/css/framework7-icons.min.css">
     <style>
         :root {
             --f7-theme-color: #007aff;
@@ -49,6 +49,12 @@
             color: #333;
             font-size: 16px;
         }
+        .profit-positive {
+            color: #4cd964;
+        }
+        .profit-negative {
+            color: #ff3b30;
+        }
     </style>
 </head>
 <body>
@@ -67,226 +73,29 @@
                 <div class="block">
                     <!-- 成本输入区域 -->
                     <div class="list inset">
-                        <div class="section-title">成本信息</div>
-                        <ul>
-                            <li class="item-content item-input">
-                                <div class="item-inner">
-                                    <div class="item-title item-label">成本价(¥)</div>
-                                    <div class="item-input-wrap">
-                                        <input type="number" id="costPrice" placeholder="输入商品成本价" value="50" min="0" step="0.01">
-                                        <span class="input-clear-button"></span>
+                        <div class="list">
+                            <ul>
+                                <li class="item-content item-input">
+                                    <div class="item-inner">
+                                        <div class="item-title item-label">成本价(¥)</div>
+                                        <div class="item-input-wrap">
+                                            <input type="number" id="costPrice" placeholder="输入商品成本价" value="50" min="0" step="0.01" class="item-input-field">
+                                            <span class="input-clear-button"></span>
+                                        </div>
                                     </div>
-                                </div>
-                            </li>
-                        </ul>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
 
                     <!-- 成本比例设置 -->
                     <div class="list inset">
-                        <div class="section-title">成本比例设置</div>
-                        <ul>
-                            <li class="item-content item-input">
-                                <div class="item-inner">
-                                    <div class="item-title item-label">物流成本(%)</div>
-                                    <div class="item-input-wrap">
-                                        <input type="number" id="logisticsRate" placeholder="物流成本比例" value="15" min="0" max="100" step="0.1">
-                                        <span class="input-clear-button"></span>
-                                    </div>
-                                </div>
-                            </li>
-                            <li class="item-content item-input">
-                                <div class="item-inner">
-                                    <div class="item-title item-label">包装成本(%)</div>
-                                    <div class="item-input-wrap">
-                                        <input type="number" id="packagingRate" placeholder="包装成本比例" value="5" min="0" max="100" step="0.1">
-                                        <span class="input-clear-button"></span>
-                                    </div>
-                                </div>
-                            </li>
-                            <li class="item-content item-input">
-                                <div class="item-inner">
-                                    <div class="item-title item-label">平台佣金(%)</div>
-                                    <div class="item-input-wrap">
-                                        <input type="number" id="platformRate" placeholder="平台佣金比例" value="10" min="0" max="100" step="0.1">
-                                        <span class="input-clear-button"></span>
-                                    </div>
-                                </div>
-                            </li>
-                            <li class="item-content item-input">
-                                <div class="item-inner">
-                                    <div class="item-title item-label">营销费用(%)</div>
-                                    <div class="item-input-wrap">
-                                        <input type="number" id="marketingRate" placeholder="营销费用比例" value="8" min="0" max="100" step="0.1">
-                                        <span class="input-clear-button"></span>
-                                    </div>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <!-- 利润和折扣设置 -->
-                    <div class="list inset">
-                        <div class="section-title">利润与折扣设置</div>
-                        <ul>
-                            <li class="item-content item-input">
-                                <div class="item-inner">
-                                    <div class="item-title item-label">目标利润率(%)</div>
-                                    <div class="item-input-wrap">
-                                        <input type="number" id="profitRate" placeholder="目标利润率" value="20" min="0" max="100" step="0.1">
-                                        <span class="input-clear-button"></span>
-                                    </div>
-                                </div>
-                            </li>
-                            <li class="item-content item-input">
-                                <div class="item-inner">
-                                    <div class="item-title item-label">折扣率(%)</div>
-                                    <div class="item-input-wrap">
-                                        <input type="number" id="discountRate" placeholder="折扣率" value="0" min="0" max="100" step="0.1">
-                                        <span class="input-clear-button"></span>
-                                    </div>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <!-- 结果显示区域 -->
-                    <div class="block">
-                        <div class="result-card">
-                            <div style="text-align: center; margin-bottom: 10px;">
-                                <i class="f7-icon f7-icons">money_dollar_circle</i>
-                                <div>推荐售价</div>
-                            </div>
-                            <div class="result-value" id="recommendedPrice">¥0.00</div>
-                            <div style="text-align: center; font-size: 14px; opacity: 0.9;">
-                                最终利润: <span id="finalProfit">¥0.00</span>
-                            </div>
-                        </div>
-
-                        <!-- 成本分解 -->
-                        <div class="cost-breakdown">
-                            <div style="font-weight: bold; margin-bottom: 10px;">成本分解</div>
-                            <div class="breakdown-item">
-                                <span>商品成本:</span>
-                                <span id="breakdownCost">¥0.00</span>
-                            </div>
-                            <div class="breakdown-item">
-                                <span>物流成本:</span>
-                                <span id="breakdownLogistics">¥0.00</span>
-                            </div>
-                            <div class="breakdown-item">
-                                <span>包装成本:</span>
-                                <span id="breakdownPackaging">¥0.00</span>
-                            </div>
-                            <div class="breakdown-item">
-                                <span>平台佣金:</span>
-                                <span id="breakdownPlatform">¥0.00</span>
-                            </div>
-                            <div class="breakdown-item">
-                                <span>营销费用:</span>
-                                <span id="breakdownMarketing">¥0.00</span>
-                            </div>
-                            <div class="breakdown-item">
-                                <span>预期利润:</span>
-                                <span id="breakdownProfit">¥0.00</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 操作按钮 -->
-                    <div class="block">
-                        <button class="button button-fill button-large color-blue" id="calculateBtn">计算推荐售价</button>
-                        <button class="button button-large" id="resetBtn">重置所有参数</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Framework7和jQuery库 -->
-    <script src="https://cdn.jsdelivr.net/npm/framework7@8/bundle/framework7-bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
-    <script>
-        // 初始化Framework7
-        var app = new Framework7({
-            el: '#app',
-            theme: 'ios',
-            // 启用动态导航栏
-            navbar: {
-                mdCenterTitle: true
-            }
-        });
-
-        // 主要计算函数
-        function calculatePrice() {
-            // 获取输入值
-            var costPrice = parseFloat($('#costPrice').val()) || 0;
-            var logisticsRate = parseFloat($('#logisticsRate').val()) || 0;
-            var packagingRate = parseFloat($('#packagingRate').val()) || 0;
-            var platformRate = parseFloat($('#platformRate').val()) || 0;
-            var marketingRate = parseFloat($('#marketingRate').val()) || 0;
-            var profitRate = parseFloat($('#profitRate').val()) || 0;
-            var discountRate = parseFloat($('#discountRate').val()) || 0;
-
-            // 计算总成本率（除了商品成本本身）
-            var totalCostRate = logisticsRate + packagingRate + platformRate + marketingRate;
-            
-            // 计算推荐售价（基于成本加成定价方法[citation:3]）
-            // 价格 = 成本价 / (1 - 总成本率 - 目标利润率)
-            var recommendedPrice = costPrice / (1 - totalCostRate/100 - profitRate/100);
-            
-            // 应用折扣
-            var finalPrice = recommendedPrice * (1 - discountRate/100);
-            
-            // 计算各项成本金额
-            var logisticsCost = finalPrice * (logisticsRate/100);
-            var packagingCost = finalPrice * (packagingRate/100);
-            var platformCost = finalPrice * (platformRate/100);
-            var marketingCost = finalPrice * (marketingRate/100);
-            var profitAmount = finalPrice * (profitRate/100);
-            
-            // 计算最终利润（售价减去所有成本和费用）
-            var totalCost = costPrice + logisticsCost + packagingCost + platformCost + marketingCost;
-            var netProfit = finalPrice - totalCost;
-
-            // 更新显示结果
-            $('#recommendedPrice').text('¥' + finalPrice.toFixed(2));
-            $('#finalProfit').text('¥' + netProfit.toFixed(2));
-            
-            // 更新成本分解
-            $('#breakdownCost').text('¥' + costPrice.toFixed(2));
-            $('#breakdownLogistics').text('¥' + logisticsCost.toFixed(2));
-            $('#breakdownPackaging').text('¥' + packagingCost.toFixed(2));
-            $('#breakdownPlatform').text('¥' + platformCost.toFixed(2));
-            $('#breakdownMarketing').text('¥' + marketingCost.toFixed(2));
-            $('#breakdownProfit').text('¥' + profitAmount.toFixed(2));
-        }
-
-        // 重置函数
-        function resetForm() {
-            $('#costPrice').val('50');
-            $('#logisticsRate').val('15');
-            $('#packagingRate').val('5');
-            $('#platformRate').val('10');
-            $('#marketingRate').val('8');
-            $('#profitRate').val('20');
-            $('#discountRate').val('0');
-            calculatePrice();
-        }
-
-        // 绑定事件
-        $(document).ready(function() {
-            // 初始计算
-            calculatePrice();
-            
-            // 计算按钮点击事件
-            $('#calculateBtn').on('click', calculatePrice);
-            
-            // 重置按钮点击事件
-            $('#resetBtn').on('click', resetForm);
-            
-            // 输入框变化时实时计算
-            $('input[type="number"]').on('input', calculatePrice);
-        });
-    </script>
-</body>
-</html>
+                        <div class="block-header section-title">成本比例设置</div>
+                        <div class="list">
+                            <ul>
+                                <li class="item-content item-input">
+                                    <div class="item-inner">
+                                        <div class="item-title item-label">物流成本(%)</div>
+                                        <div class="item-input-wrap">
+                                            <input type="number" id="logisticsRate" placeholder="物流成本比例" value="15" min="0" max="100" step="0.1" class="item-input-field">
+                                            <span class="input-clear
